@@ -19,43 +19,43 @@ double differentialFormula(double time, type type, int iteration) {
     double result;
     switch(type) {
         case OZE:
-            // y = 71288.3358 e ^ 0.0376x
-            // y'= 2677.7325  e ^ 0.0376x            
+            // y = 71288.3358 e ^ 0.0376x                        
             result = 2677.7325 * exp(0.0376 * time);
             break;
         case OZE_PRICE:
-            if (iteration < 800) {
-                // y = 438.3751 e ^ 0.0121x
-                // y'= 5.3162   e ^ 0.0121x
+            if (iteration < 800 || iteration > 1100) {
+                // y = 438.3751 e ^ 0.0121x                
                 result = 5.3162 * exp(0.0121 * time);
             } else {
-                // y = 339.5231 e ^ 0.0518x
-                // y'= 17.5758  e ^ 0.0518x
+                // y = 339.5231 e ^ 0.0518x                
                 result = 17.5758 * exp(0.0518 * time);
             }                       
             break;
         case NATURAL_GAS:    
-            // y = 5000 sin(0.0129x + 150) + 52000
-            // y'= 64.5 cos(0.0129x + 150)
+            // y = 5000 sin(0.0129x + 150) + 52000            
             result = 6995 * cos(1.3999 * time - 1);                       
             break;
         case NATURAL_GAS_PRICE:
         if (iteration < 800 || iteration > 1100)
-            // y = 558.6047 e ^ -0.0114x
-            // y'= -6.3888 e ^ -0.0114x
+            // y = 558.6047 e ^ -0.0114x            
             result = -6.3888 * exp(-0.0114 * time);
         else {
-            // y = 502.8600 e ^ 0.4122x
-            // y'= 207.2929 e ^ 0.4122x
+            // y = 502.8600 e ^ 0.4122x            
             result = 65.0971 * exp(0.1539 * time);
         }
             break;
         case COAL:
-            // y = 40340.4110 e ^ -0.0512x
-            // y'= -2066.7603 e ^ -0.0512x          
+            // y = 40340.4110 e ^ -0.0512x                    
             result = -2066.7603 * exp(-0.0512 * time);
             break;
         case COAL_PRICE:
+            if (iteration < 800 || iteration > 1100) {
+                 // y = 443.6345 e ^ 0.0288
+                result = 12.7762 * exp(0.0288 * time);
+            } else {
+                // y = 514.5609 e ^ 0.0946
+                result = 48.6960 * exp(0.0946 * time);
+            }           
             break;
     }
     return result;       
@@ -110,6 +110,8 @@ void printResult(int year, double *values, type type, int iterations) {
             row = "         TJ              ";
             break;
         case COAL_PRICE:
+            header = "   Priemerna cena-Uhlie                 ";
+            row = "         Kč/GJ           ";
             break;
     }
 
@@ -172,6 +174,8 @@ int main(int argc, char **argv) {
             case 'C':
                 type = COAL_PRICE;
                 startValue = 448.88;
+                iterations = ITERATIONS * 18 + 5;
+                year = 2012;
                 break;                                   
         }
     }

@@ -1,3 +1,13 @@
+/******************************************************************************
+ *                                  IMS 2022
+ *                               2 Teplárenství 
+ * 
+ *      Authors: Erik Hrubý         (xhruby30)
+ *               Alžbeta Hricovová  (xhrico00)
+ *      
+ * 
+ *                        Last change: 04. 12. 2022
+ *****************************************************************************/
 #include <stdio.h>
 #include <math.h>
 #include <getopt.h>
@@ -18,42 +28,33 @@ typedef enum {
 double differentialFormula(double time, type type, int iteration) {
     double result;
     switch(type) {
-        case OZE:
-            // y = 71288.3358 e ^ 0.0376x                        
+        case OZE:                                    
             result = 2677.7325 * exp(0.0376 * time);
             break;
         case OZE_PRICE:
-            if (iteration < 800 || iteration > 1100) {
-                // y = 438.3751 e ^ 0.0121x                
+            if (iteration < 800 || iteration > 1100) {                                
                 result = 5.3162 * exp(0.0121 * time);
-            } else {
-                // y = 472.2899 e ^ 0.0785x                
+            } else {                                
                 result = 37.0511 * exp(0.0785 * time);
             }                       
             break;
-        case NATURAL_GAS:    
-            // y = 5000 sin(0.0129x + 150) + 52000            
+        case NATURAL_GAS:                            
             result = 6995 * cos(1.3999 * time - 1);                       
             break;
         case NATURAL_GAS_PRICE:
-        if (iteration < 800 || iteration > 1100)
-            // y = 558.6047 e ^ -0.0114x            
+        if (iteration < 800 || iteration > 1100)                        
             result = -6.3888 * exp(-0.0114 * time);
-        else {
-            // y = 502.8600 e ^ 0.4122x            
+        else {                        
             result = 65.0971 * exp(0.1539 * time);
         }
             break;
-        case COAL:
-            // y = 40340.4110 e ^ -0.0512x                    
+        case COAL:                                
             result = -2066.7603 * exp(-0.0512 * time);
             break;
         case COAL_PRICE:
-            if (iteration < 800 || iteration > 1100) {
-                 // y = 443.6345 e ^ 0.0288
+            if (iteration < 800 || iteration > 1100) {                 
                 result = 12.7762 * exp(0.0288 * time);
-            } else {
-                // y = 514.5609 e ^ 0.0946
+            } else {                
                 result = 48.6960 * exp(0.0946 * time);
             }           
             break;

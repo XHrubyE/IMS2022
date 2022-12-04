@@ -27,8 +27,8 @@ double differentialFormula(double time, type type, int iteration) {
                 // y = 438.3751 e ^ 0.0121x                
                 result = 5.3162 * exp(0.0121 * time);
             } else {
-                // y = 339.5231 e ^ 0.0518x                
-                result = 17.5758 * exp(0.0518 * time);
+                // y = 472.2899 e ^ 0.0785x                
+                result = 37.0511 * exp(0.0785 * time);
             }                       
             break;
         case NATURAL_GAS:    

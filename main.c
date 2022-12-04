@@ -15,7 +15,7 @@ typedef enum {
     COAL_PRICE
 } type;
 
-double differentialFormula(double time, type type) {
+double differentialFormula(double time, type type, int iteration) {
     double result;
     switch(type) {
         case OZE:
@@ -24,9 +24,15 @@ double differentialFormula(double time, type type) {
             result = 2677.7325 * exp(0.0376 * time);
             break;
         case OZE_PRICE:
-            // y = 438.3751 e ^ 0.0121x
-            // y'= 5.3162   e ^ 0.0121x
-            result = 5.3162 * exp(0.0121 * time);          
+            if (iteration < 800) {
+                // y = 438.3751 e ^ 0.0121x
+                // y'= 5.3162   e ^ 0.0121x
+                result = 5.3162 * exp(0.0121 * time);
+            } else {
+                // y = 339.5231 e ^ 0.0518x
+                // y'= 17.5758  e ^ 0.0518x
+                result = 17.5758 * exp(0.0518 * time);
+            }                       
             break;
         case NATURAL_GAS:    
             // y = 5000 sin(0.0129x + 150) + 52000
@@ -34,6 +40,15 @@ double differentialFormula(double time, type type) {
             result = 6995 * cos(1.3999 * time - 1);                       
             break;
         case NATURAL_GAS_PRICE:
+        if (iteration < 800 || iteration > 1100)
+            // y = 558.6047 e ^ -0.0114x
+            // y'= -6.3888 e ^ -0.0114x
+            result = -6.3888 * exp(-0.0114 * time);
+        else {
+            // y = 502.8600 e ^ 0.4122x
+            // y'= 207.2929 e ^ 0.4122x
+            result = 65.0971 * exp(0.1539 * time);
+        }
             break;
         case COAL:
             // y = 40340.4110 e ^ -0.0512x
@@ -48,10 +63,10 @@ double differentialFormula(double time, type type) {
 
 void rungeKutta(double time, double *values, type type) {       
     for (int i = 1; i <= 3; ++i) {
-        double k1 = STEP * differentialFormula(time, type);
-        double k2 = STEP * differentialFormula(time + STEP / 2, type);
-        double k3 = STEP * differentialFormula(time + STEP / 2, type);
-        double k4 = STEP * differentialFormula(time + STEP, type);        
+        double k1 = STEP * differentialFormula(time, type, i);
+        double k2 = STEP * differentialFormula(time + STEP / 2, type, i);
+        double k3 = STEP * differentialFormula(time + STEP / 2, type, i);
+        double k4 = STEP * differentialFormula(time + STEP, type, i);        
 
         values[i] = values[i - 1] + (k1 + 2*k2 + 2*k3 + k4) / 6;
         time += STEP;
@@ -62,10 +77,10 @@ void adamsBashforth(double time, double *values, type type, int iterations) {
     time += STEP * 4;
     for (int i = 4; i < iterations; i++) {
         values[i] = values[i - 1] + (0.01 / 24) * 
-        (55 * differentialFormula(time - 0.01, type) 
-        -59 * differentialFormula(time - 0.02, type) 
-        +37 * differentialFormula(time - 0.03, type) 
-        - 9 * differentialFormula(time - 0.04, type));               
+        (55 * differentialFormula(time - 0.01, type, i) 
+        -59 * differentialFormula(time - 0.02, type, i) 
+        +37 * differentialFormula(time - 0.03, type, i) 
+        -9  * differentialFormula(time - 0.04, type, i));               
         time = time + 0.01;
     }
 }
@@ -87,6 +102,8 @@ void printResult(int year, double *values, type type, int iterations) {
             row = "         TJ              ";                       
             break;
         case NATURAL_GAS_PRICE:
+            header = "   Priemerna cena-Zemny plyn           ";
+            row = "         Kč/GJ           ";
             break;
         case COAL:
             header = "   Konečná spotřeba-Uhlie             ";
@@ -143,6 +160,8 @@ int main(int argc, char **argv) {
             case 'B':
                 type = NATURAL_GAS_PRICE;
                 startValue = 551.13;
+                iterations = ITERATIONS * 18 + 5;
+                year = 2012;
                 break;
             case 'c':
                 type = COAL;
